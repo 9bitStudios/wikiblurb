@@ -19,7 +19,8 @@
 	    section: 0,
 	    page: 'Jimi_Hendrix',
 	    removeLinks: false,	    
-	    type: 'all'
+	    type: 'all',
+	    customSelector: '',
         }, options);
         
 	/******************************
@@ -92,7 +93,9 @@
 			else if(settings.type === 'blurb') 
 			    object.html($(blurb).find('p:first'));
 			else if(settings.type === 'infobox') 
-			    object.html($(blurb).find('.vcard'));			
+			    object.html($(blurb).find('.vcard'));
+			else if(settings.type === 'custom') 
+			    object.html($(blurb).find(settings.customSelector));			
 			else
 			    object.html(blurb);
 			
