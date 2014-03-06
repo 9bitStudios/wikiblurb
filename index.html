@@ -14,14 +14,23 @@
 <h1>Wikiblurb</h1>
 	
 <div id="article"></div>
- 
+<div id="otherWikiArticle"></div>
+
 <script src="js/jquery.wikiblurb.js" type="text/javascript"></script>
 <script type="text/javascript">
 
 $(document).ready(function(){
-    $('#article').wikiblurb({
-	type: 'custom',
-	customSelector: 'p:first'
+    
+    $('#article').wikiblurb();
+    
+    $('#otherWikiArticle').wikiblurb({
+	wikiURL: "http://fallout.wikia.com/",
+	apiPath: '',
+	section: 0,
+	page: 'Fallout',
+	removeLinks: false,	    
+	type: 'text',
+	customSelector: '',
     });
 });
 
