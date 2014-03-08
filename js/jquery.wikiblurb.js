@@ -66,9 +66,9 @@
 
 			try {
 			    var markup = data.parse.text["*"];
-			    var blurb = $('<div></div>').html(markup);
+			    var blurb = $('<div class="nbs-wikiblurb"></div>').html(markup);
 
-			    // remove links as they will not work
+			    // remove links?
 
 			    if(settings.removeLinks) {
 				blurb.find('a').each(function() { 
@@ -89,23 +89,35 @@
 			    // remove cite error
 			    blurb.find('.mw-ext-cite-error').remove();
 
-			    if(settings.type === 'text')
-				object.html($(blurb).find('p'));
-			    else if(settings.type === 'blurb') 
-				object.html($(blurb).find('p:first'));
-			    else if(settings.type === 'infobox') 
-				object.html($(blurb).find('.vcard'));
-			    else if(settings.type === 'custom') 
-				object.html($(blurb).find(settings.customSelector));			
-			    else
-				object.html(blurb);
+			    switch(settings.type) {
+				case 'text':				
+				    object.html($(blurb).find('p'));
+				    break;
+				    
+				case 'blurb':
+				    object.html($(blurb).find('p:first'));
+				    break;
+				
+				case 'infobox':
+				    object.html($(blurb).find('.vcard'));
+				    break;
+				    
+				case 'custom':
+				    object.html($(blurb).find(settings.customSelector));
+				    break;
+				
+				default:
+				    object.html(blurb);
+				    break;
+			    }
+				
 			}
 			catch(e){
 			    methods.showError();
 			}
 			
 		    },
-		    error: function (errorMessage) {
+		    error: function (jqXHR, textStatus, errorThrown) {
 			methods.showError();
 		    }
 		});
