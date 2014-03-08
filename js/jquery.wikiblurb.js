@@ -64,47 +64,56 @@
 		    dataType: "json",
 		    success: function (data, textStatus, jqXHR) {
 
-			var markup = data.parse.text["*"];
-			var blurb = $('<div></div>').html(markup);
+			try {
+			    var markup = data.parse.text["*"];
+			    var blurb = $('<div></div>').html(markup);
 
-			// remove links as they will not work
-			
-			if(settings.removeLinks) {
-			    blurb.find('a').each(function() { 
-				$(this).replaceWith($(this).html()); 
-			    });
-			}
-			else {
-			    blurb.find('a').each(function() {
-				var link = $(this);
-				var relativePath = link.attr('href').substring(1); // remove leading slash
-				link.attr('href', settings.wikiURL + relativePath); 
-			    });			    
-			}
-			    
-			// remove any references
-			blurb.find('sup').remove();
+			    // remove links as they will not work
 
-			// remove cite error
-			blurb.find('.mw-ext-cite-error').remove();
-			
-			if(settings.type === 'text')
-			    object.html($(blurb).find('p'));
-			else if(settings.type === 'blurb') 
-			    object.html($(blurb).find('p:first'));
-			else if(settings.type === 'infobox') 
-			    object.html($(blurb).find('.vcard'));
-			else if(settings.type === 'custom') 
-			    object.html($(blurb).find(settings.customSelector));			
-			else
-			    object.html(blurb);
+			    if(settings.removeLinks) {
+				blurb.find('a').each(function() { 
+				    $(this).replaceWith($(this).html()); 
+				});
+			    }
+			    else {
+				blurb.find('a').each(function() {
+				    var link = $(this);
+				    var relativePath = link.attr('href').substring(1); // remove leading slash
+				    link.attr('href', settings.wikiURL + relativePath); 
+				});			    
+			    }
+
+			    // remove any references
+			    blurb.find('sup').remove();
+
+			    // remove cite error
+			    blurb.find('.mw-ext-cite-error').remove();
+
+			    if(settings.type === 'text')
+				object.html($(blurb).find('p'));
+			    else if(settings.type === 'blurb') 
+				object.html($(blurb).find('p:first'));
+			    else if(settings.type === 'infobox') 
+				object.html($(blurb).find('.vcard'));
+			    else if(settings.type === 'custom') 
+				object.html($(blurb).find(settings.customSelector));			
+			    else
+				object.html(blurb);
+			}
+			catch(e){
+			    methods.showError();
+			}
 			
 		    },
 		    error: function (errorMessage) {
-			return 'There was an error fetching your Wikiblurb...';
+			methods.showError();
 		    }
 		});
-	    }			
+	    },
+	    
+	    showError: function(){
+		object.html('<div class="nbs-wikiblurb-error">There was an error locating your wiki data</div>');
+	    }
 
         };
         
