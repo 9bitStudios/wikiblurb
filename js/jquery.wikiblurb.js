@@ -21,6 +21,7 @@
 	    removeLinks: false,	    
 	    type: 'all',
 	    customSelector: '',
+		filterSelector: ''
         }, options);
         
 	/******************************
@@ -88,6 +89,9 @@
 
 			    // remove cite error
 			    blurb.find('.mw-ext-cite-error').remove();
+
+				// filter elements
+				if(settings.filterSelector) blurb.find(settings.filterSelector).remove();
 
 			    switch(settings.type) {
 				case 'text':				
