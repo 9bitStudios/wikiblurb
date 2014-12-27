@@ -1,7 +1,27 @@
 Wikiblurb.js
 =========
 
-A jQuery Plugin for Wikipedia and Other Wikis. All you have to do is call it on an element and Wikiblurb will populate that element with data from a wiki.
+A jQuery Plugin for Wikipedia and Other Wikis. All you have to do is call it on an element and Wikiblurb will populate that element with data from a wiki...
+
+```javascript
+<script type="text/javascript">
+$(document).ready(function(){
+    
+    $('#article').wikiblurb();
+    
+    $('#otherWikiArticle').wikiblurb({
+	      wikiURL: "http://fallout.wikia.com/",
+	      apiPath: '',
+	      section: 0,
+	      page: 'Fallout',
+	      removeLinks: false,	    
+	      type: 'text',
+	      customSelector: ''
+    });
+    
+});
+</script>
+```
 
 ### Options
 
