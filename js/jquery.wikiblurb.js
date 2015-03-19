@@ -61,7 +61,7 @@
 		    type: "GET",
 		    url: settings.wikiURL + settings.apiPath + "/api.php?action=parse&format=json&prop=text&section="+settings.section+"&page="+settings.page+"&callback=?",
 		    contentType: "application/json; charset=utf-8",
-		    async: false,
+		    async: true,
 		    dataType: "json",
 		    success: function (data, textStatus, jqXHR) {
 
