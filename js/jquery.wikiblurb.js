@@ -117,8 +117,9 @@
 			    }
 
 			    // callback call
-			    console.log(settings.callback);
-			    window[settings.callback]();
+			    if(settings.callback.length > 0){
+					window[settings.callback]();
+			    }
 				
 			}
 			catch(e){
