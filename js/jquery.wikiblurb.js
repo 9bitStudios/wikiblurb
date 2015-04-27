@@ -21,7 +21,8 @@
 	    removeLinks: false,	    
 	    type: 'all',
 	    customSelector: '',
-		filterSelector: ''
+		filterSelector: '',
+		callback: ''
         }, options);
         
 	/******************************
@@ -114,6 +115,10 @@
 				    object.html(blurb);
 				    break;
 			    }
+
+			    // callback call
+			    console.log(settings.callback);
+			    window[settings.callback]();
 				
 			}
 			catch(e){
