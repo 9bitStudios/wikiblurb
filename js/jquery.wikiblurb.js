@@ -21,7 +21,8 @@
 	    removeLinks: false,	    
 	    type: 'all',
 	    customSelector: '',
-		filterSelector: ''
+            filterSelector: '', 
+            callback: function(){ }
         }, options);
         
 	/******************************
@@ -43,7 +44,18 @@
 		    methods.initializeItems();
 		});
 	    },
-			
+
+	    /******************************
+	    Utilities
+	    *******************************/			
+
+	    addUnderscores: function(page) {
+		if(page.trim().indexOf(' ') !== -1) {
+                    page.replace(' ', '_');
+                }
+                return page;
+	    },            
+            
 	    /******************************
 	    Append HTML
 	    *******************************/			
@@ -57,6 +69,9 @@
 	    *******************************/			
 
 	    initializeItems: function() {
+                
+                var page = methods.addUnderscores(settings.page);
+                
 		$.ajax({
 		    type: "GET",
 		    url: settings.wikiURL + settings.apiPath + "/api.php?action=parse&format=json&prop=text&section="+settings.section+"&page="+settings.page+"&callback=?",
@@ -91,7 +106,9 @@
 			    blurb.find('.mw-ext-cite-error').remove();
 
 				// filter elements
-				if(settings.filterSelector) blurb.find(settings.filterSelector).remove();
+                            if(settings.filterSelector) { 
+                                blurb.find(settings.filterSelector).remove(); 
+                            }
 
 			    switch(settings.type) {
 				case 'text':				
@@ -114,6 +131,8 @@
 				    object.html(blurb);
 				    break;
 			    }
+                            
+                            settings.callback();
 				
 			}
 			catch(e){

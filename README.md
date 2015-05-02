@@ -10,13 +10,17 @@ $(document).ready(function(){
     $('#article').wikiblurb();
     
     $('#otherWikiArticle').wikiblurb({
-	      wikiURL: "http://fallout.wikia.com/",
-	      apiPath: '',
-	      section: 0,
-	      page: 'Fallout',
-	      removeLinks: false,	    
-	      type: 'text',
-	      customSelector: ''
+        wikiURL: "http://fallout.wikia.com/",
+        apiPath: '',
+        section: 0,
+        page: 'Fallout',
+        removeLinks: false,	    
+        type: 'text',
+        customSelector: '',
+        callback: function(){ 
+            console.log('Data loaded...');
+        }
+              
     });
     
 });
@@ -36,3 +40,4 @@ Below is a listing of options your can set....
 | removeLinks | Boolean | false | Setting this option to true will return just text data and will not have any links present. | removeLinks: true |
 | type | String | "all" | Possible values are "text", "blurb", "infobox", and "custom" | type: "infobox" |
 | customSelector | String | "" | If the type setting is set to "custom", then this is the selector that Wikiblurb will look for | customSelector: ".mw-class" |
+| callback | Function | function() { } | Callback that executes after data has been successfully loaded | function() { alert("Data loaded..."); } |

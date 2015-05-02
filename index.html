@@ -30,7 +30,10 @@ $(document).ready(function(){
 	page: 'Fallout',
 	removeLinks: false,	    
 	type: 'text',
-	customSelector: ''
+	customSelector: '',
+        callback: function() {
+            console.log('Data Loaded...');
+        }
     });
 });
 
