@@ -120,7 +120,7 @@
 				    break;
 				
 				case 'infobox':
-				    object.html($(blurb).find('.vcard'));
+				    object.html($(blurb).find('.infobox'));
 				    break;
 				    
 				case 'custom':
