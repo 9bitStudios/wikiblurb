@@ -132,7 +132,7 @@
 				    break;
 			    }
                             
-                            settings.callback();
+                settings.callback(object.html());
 				
 			}
 			catch(e){
