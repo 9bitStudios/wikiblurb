@@ -81,6 +81,7 @@
 		    success: function (data, textStatus, jqXHR) {
 
 			try {
+    			var title = data.parse.title;
 			    var markup = data.parse.text["*"];
 			    var blurb = $('<div class="nbs-wikiblurb"></div>').html(markup);
 
@@ -111,6 +112,10 @@
                             }
 
 			    switch(settings.type) {
+                case 'title':				
+				    object.html(title);
+				    break;
+				
 				case 'text':				
 				    object.html($(blurb).find('p'));
 				    break;
@@ -132,7 +137,7 @@
 				    break;
 			    }
                             
-                settings.callback(object.html());
+                settings.callback();
 				
 			}
 			catch(e){
