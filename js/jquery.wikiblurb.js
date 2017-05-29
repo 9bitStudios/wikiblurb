@@ -1,6 +1,6 @@
 /*
 * File: jquery.wikiblurb.js
-* Version: 1.0.0
+* Version: 1.0.1
 * Description: A simple jQuery plugin to get sections of Wikipedia and other Wikis
 * Author: 9bit Studios
 * Copyright 2012, 9bit Studios
@@ -25,131 +25,144 @@
             callback: function(){ }
         }, options);
         
-	/******************************
-	Private Variables
-	*******************************/         
+        /******************************
+        Private Variables
+        *******************************/         
 
-	var object = $(this);
-	var settings = $.extend(defaults, options);
+        var object = $(this);
+        var settings = $.extend(defaults, options);
 	
-	/******************************
-	Public Methods
-	*******************************/         
-        
+        /******************************
+        Public Methods
+        *******************************/         
+
         var methods = {
-        	
-	    init: function() {
-		return this.each(function () {
-		    methods.appendHTML();
-		    methods.initializeItems();
-		});
-	    },
 
-	    /******************************
-	    Utilities
-	    *******************************/			
+            init: function() {
+                return this.each(function () {
+                    methods.appendHTML();
+                    methods.initializeItems();
+                });
+            },
 
-	    addUnderscores: function(page) {
-		if(page.trim().indexOf(' ') !== -1) {
+            /******************************
+            Utilities
+            *******************************/			
+
+            addUnderscores: function(page) {
+                if(page.trim().indexOf(' ') !== -1) {
                     page.replace(' ', '_');
                 }
                 return page;
-	    },            
+            },            
             
-	    /******************************
-	    Append HTML
-	    *******************************/			
+            /******************************
+            Append HTML
+            *******************************/			
 
-	    appendHTML: function() {
-		// nothiing to append
-	    },
+            appendHTML: function() {
+            // nothiing to append
+            },
 
-	    /******************************
-	    Initialize
-	    *******************************/			
+            /******************************
+            Initialize
+            *******************************/			
 
-	    initializeItems: function() {
-                
+            initializeItems: function() {
+                    
                 var page = methods.addUnderscores(settings.page);
-                
-		$.ajax({
-		    type: "GET",
-		    url: settings.wikiURL + settings.apiPath + "/api.php?action=parse&format=json&prop=text&section="+settings.section+"&page="+settings.page+"&callback=?",
-		    contentType: "application/json; charset=utf-8",
-		    async: true,
-		    dataType: "json",
-		    success: function (data, textStatus, jqXHR) {
+                        
+                $.ajax({
+                    type: "GET",
+                    url: settings.wikiURL + settings.apiPath + "/api.php?action=parse&format=json&prop=text&page="+page+"&callback=?",
+                    contentType: "application/json; charset=utf-8",
+                    async: true,
+                    dataType: "json",
+                    success: function (data, textStatus, jqXHR) {
 
-			try {
-			    var markup = data.parse.text["*"];
-			    var blurb = $('<div class="nbs-wikiblurb"></div>').html(markup);
+                        try {
+                            var markup = data.parse.text["*"];
+                            var blurb = $('<div class="nbs-wikiblurb"></div>').html(markup);
 
-			    // remove links?
+                            methods.refineResult(blurb);
 
-			    if(settings.removeLinks) {
-				blurb.find('a').each(function() { 
-				    $(this).replaceWith($(this).html()); 
-				});
-			    }
-			    else {
-				blurb.find('a').each(function() {
-				    var link = $(this);
-				    var relativePath = link.attr('href').substring(1); // remove leading slash
-				    link.attr('href', settings.wikiURL + relativePath); 
-				});			    
-			    }
+                            switch(settings.type) {
+                                case 'text':				
+                                    object.html($(blurb).find('p'));
+                                break;
 
-			    // remove any references
-			    blurb.find('sup').remove();
+                                case 'blurb':
+                                    object.html($(blurb).find('p:first'));
+                                break;
 
-			    // remove cite error
-			    blurb.find('.mw-ext-cite-error').remove();
+                                case 'infobox':
+                                    object.html($(blurb).find('.infobox'));
+                                break;
 
-				// filter elements
-                            if(settings.filterSelector) { 
-                                blurb.find(settings.filterSelector).remove(); 
+                                case 'custom':
+                                    object.html($(blurb).find(settings.customSelector));
+                                break;
+
+                                default:
+                                    object.html(blurb);
+                                break;
                             }
-
-			    switch(settings.type) {
-				case 'text':				
-				    object.html($(blurb).find('p'));
-				    break;
-				    
-				case 'blurb':
-				    object.html($(blurb).find('p:first'));
-				    break;
-				
-				case 'infobox':
-				    object.html($(blurb).find('.infobox'));
-				    break;
-				    
-				case 'custom':
-				    object.html($(blurb).find(settings.customSelector));
-				    break;
-				
-				default:
-				    object.html(blurb);
-				    break;
-			    }
                             
                             settings.callback();
-				
-			}
-			catch(e){
-			    methods.showError();
-			}
-			
-		    },
-		    error: function (jqXHR, textStatus, errorThrown) {
-			methods.showError();
-		    }
-		});
-	    },
-	    
-	    showError: function(){
-		object.html('<div class="nbs-wikiblurb-error">There was an error locating your wiki data</div>');
-	    }
 
+                        }
+                        catch(e){
+                            methods.showError();
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        methods.showError();
+                    }
+                });
+            },
+            refineResult: function(blurb){
+                // remove links?
+                if(settings.removeLinks) {
+                    blurb.find('a').each(function() { 
+                        $(this).replaceWith($(this).html()); 
+                    });
+                }
+                else {
+
+                    var baseWikiURL = methods.removeTrailingSlash(settings.wikiURL);
+
+                    blurb.find('a').each(function() {
+                        var link = $(this);
+                        var relativePath = link.attr('href');
+                        link.attr('href', baseWikiURL + relativePath); 
+                    });			    
+                }
+
+                // remove any references
+                blurb.find('sup').remove();
+
+                // remove cite error
+                blurb.find('.mw-ext-cite-error').remove();
+
+                // filter elements
+                if(settings.filterSelector) { 
+                    blurb.find(settings.filterSelector).remove(); 
+                }
+
+                return blurb;
+
+            },
+            removeTrailingSlash: function(str){
+
+                if(str.substr(-1) === '/') {
+                    return str.substr(0, str.length - 1);
+                }
+                return str;
+              
+            },
+            showError: function(){
+                object.html('<div class="nbs-wikiblurb-error">There was an error locating your wiki data</div>');
+            }
         };
         
         if (methods[options]) { // $("#element").pluginName('methodName', 'arg1', 'arg2');
@@ -158,7 +171,7 @@
             return methods.init.apply(this);  
         } else {
             $.error( 'Method "' +  method + '" does not exist in wikiblurb plugin!');
-        } 
+        }
     };
 
 })(jQuery);
