@@ -1,9 +1,9 @@
 /*
 * File: jquery.wikiblurb.js
-* Version: 1.0.1
+* Version: 1.0.2
 * Description: A simple jQuery plugin to get sections of Wikipedia and other Wikis
 * Author: 9bit Studios
-* Copyright 2012, 9bit Studios
+* Copyright 2014, 9bit Studios
 * http://www.9bitstudios.com
 * Free to use and abuse under the MIT license.
 * http://www.opensource.org/licenses/mit-license.php
@@ -14,13 +14,13 @@
     $.fn.wikiblurb = function (options) {
 
         var defaults = $.extend({
-	    wikiURL: "http://en.wikipedia.org/",
-	    apiPath: 'w',
-	    section: 0,
-	    page: 'Jimi_Hendrix',
-	    removeLinks: false,	    
-	    type: 'all',
-	    customSelector: '',
+            wikiURL: "http://en.wikipedia.org/",
+            apiPath: 'w',
+            section: 0,
+            page: 'Jimi_Hendrix',
+            removeLinks: false,	    
+            type: 'all',
+            customSelector: '',
             filterSelector: '', 
             callback: function(){ }
         }, options);
@@ -61,7 +61,7 @@
             *******************************/			
 
             appendHTML: function() {
-            // nothiing to append
+                // nothing to append
             },
 
             /******************************
@@ -70,11 +70,15 @@
 
             initializeItems: function() {
                     
-                var page = methods.addUnderscores(settings.page);
-                        
+                var page = methods.addUnderscores(settings.page), section;
+                
+                if(settings.section !== null) {
+                    section = "&section=" + settings.section
+                }
+
                 $.ajax({
                     type: "GET",
-                    url: settings.wikiURL + settings.apiPath + "/api.php?action=parse&format=json&prop=text&page="+page+"&callback=?",
+                    url: settings.wikiURL + settings.apiPath + "/api.php?action=parse&format=json&prop=text"+ section +"&page="+ page +"&callback=?",
                     contentType: "application/json; charset=utf-8",
                     async: true,
                     dataType: "json",
@@ -89,23 +93,23 @@
                             switch(settings.type) {
                                 case 'text':				
                                     object.html($(blurb).find('p'));
-                                break;
+                                    break;
 
                                 case 'blurb':
                                     object.html($(blurb).find('p:first'));
-                                break;
+                                    break;
 
                                 case 'infobox':
                                     object.html($(blurb).find('.infobox'));
-                                break;
+                                    break;
 
                                 case 'custom':
                                     object.html($(blurb).find(settings.customSelector));
-                                break;
+                                    break;
 
                                 default:
                                     object.html(blurb);
-                                break;
+                                    break;
                             }
                             
                             settings.callback();
